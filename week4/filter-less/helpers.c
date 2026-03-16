@@ -156,15 +156,38 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // ---------------------------------------------------------------------------
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // TODO: declare a copy of the image
-    //   RGBTRIPLE copy[height][width];
-    //   memcpy(copy, image, sizeof(image[0][0]) * height * width);
+    RGBTRIPLE copy[height][width];
+    memcpy(copy, image, sizeof(copy));
 
-    // TODO: outer loops over each pixel (i, j)
-    //   For each pixel:
-    //     - initialize sum_r, sum_g, sum_b = 0.0 and count = 0
-    //     - inner loops di = -1..1, dj = -1..1
-    //       - check bounds
-    //       - accumulate copy[i+di][j+dj] channels into sums, increment count
-    //     - assign round(sum / count) to image[i][j] channels
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            float sumRed = 0;
+            float sumGreen = 0;
+            float sumBlue = 0;
+            int count = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+
+                    if (ni >= 0 && ni < height && nj >= 0 && nj < width)
+                    {
+                        sumRed += copy[ni][nj].rgbtRed;
+                        sumGreen += copy[ni][nj].rgbtGreen;
+                        sumBlue += copy[ni][nj].rgbtBlue;
+                        count++;
+                    }
+                }
+            }
+
+            image[i][j].rgbtRed = round(sumRed / count);
+            image[i][j].rgbtGreen = round(sumGreen / count);
+            image[i][j].rgbtBlue = round(sumBlue / count);
+        }
+    }
 }
