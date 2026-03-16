@@ -43,6 +43,11 @@ int main(int argc, string argv[])
     //   printf("Usage: ./caesar key\n");
     //   return 1;
 
+    if (argc != 2 || !only_digits(argv[1]))
+    {
+        printf("Usage: ./caesar key\n");
+        return 1;
+    }
 
     // ---------------------------------------------------------------------------
     // STEP 2: Convert the key from string to int
@@ -50,13 +55,14 @@ int main(int argc, string argv[])
     // TODO: Use atoi() to convert argv[1] to an integer.
     //   int key = atoi(argv[1]);
 
-
+    int key = atoi(argv[1]);
     // ---------------------------------------------------------------------------
     // STEP 3: Get the plaintext from the user
     // ---------------------------------------------------------------------------
     // TODO: Use get_string() to prompt for plaintext.
     //   string plaintext = get_string("plaintext:  ");
 
+    string plaintext = get_string("plaintext: ");
 
     // ---------------------------------------------------------------------------
     // STEP 4: Encrypt and print the ciphertext
@@ -70,7 +76,14 @@ int main(int argc, string argv[])
     //
     // The output should start with "ciphertext: " (with a trailing space):
     //   printf("ciphertext: ");
+    printf("ciphertext: ");
 
+    for (int i = 0; i < strlen(plaintext); i++)
+    {
+        printf("%c", rotate(plaintext[i], key));
+    }
+
+    printf("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -84,6 +97,13 @@ bool only_digits(string s)
     // TODO: Loop through each character of s
     // TODO: If any character is NOT a digit, return false
     // TODO: If all characters are digits, return true
+    for (int i = 0; i < strlen(s); i++)
+    {
+        if (!isdigit(s[i]))
+        {
+            return false;
+        }
+    }
 
     return true; // placeholder — replace this
 }
@@ -106,6 +126,16 @@ char rotate(char c, int n)
     // TODO: If c is uppercase, rotate it and return the result
     // TODO: If c is lowercase, rotate it and return the result
     // TODO: If c is not a letter, return c unchanged
+    if(isupper(c)){
+        return (c - 'A' + n) % 26 + 'A';
+    }
+    else if(islower(c)){
+        return (c - 'a' + n) % 26 + 'a';
+    }
 
-    return c; // placeholder — replace this
+    else{
+        return c; // placeholder — replace this
+    }
+
+
 }

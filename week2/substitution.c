@@ -41,12 +41,18 @@ int main(int argc, string argv[])
     // TODO: Check argc == 2
     // TODO: Check is_valid_key(argv[1])
 
+    if(argc != 2 || !is_valid_key(argv[1])){
+        printf("Usage: ./substitution key\n");
+        return 1;
+
+    }
 
     // ---------------------------------------------------------------------------
     // STEP 2: Get the plaintext from the user
     // ---------------------------------------------------------------------------
     // TODO: Use get_string("plaintext:  ") and store in a variable
 
+    string plaintext = get_string("plaintext: ");
 
     // ---------------------------------------------------------------------------
     // STEP 3: Encrypt and print ciphertext
@@ -65,15 +71,34 @@ int main(int argc, string argv[])
     //   The substituted letter: argv[1][position]
     //   To preserve case: if original was uppercase, use toupper(substituted_letter)
     //                     if original was lowercase, use tolower(substituted_letter)
+printf("ciphertext: ");
 
-    printf("ciphertext: ");
+for (int i = 0; i < strlen(plaintext); i++)
+{
+    char c = plaintext[i];
 
-    // TODO: loop and print each encrypted character
-
-    printf("\n");
-    return 0;
+    if (isupper(c))
+    {
+        int position = c - 'A';
+        char substituted = argv[1][position];
+        printf("%c", toupper(substituted));
+    }
+    else if (islower(c))
+    {
+        int position = c - 'a';
+        char substituted = argv[1][position];
+        printf("%c", tolower(substituted));
+    }
+    else
+    {
+        printf("%c", c);
+    }
 }
 
+printf("\n");
+
+return 0;
+}
 // ---------------------------------------------------------------------------
 // TODO: Implement is_valid_key
 // ---------------------------------------------------------------------------
@@ -93,16 +118,32 @@ int main(int argc, string argv[])
 //     If yes → duplicate found → return false
 //     If no  → mark it as seen and continue
 // ---------------------------------------------------------------------------
+
 bool is_valid_key(string key)
 {
-    // TODO: Check length is 26
     if (strlen(key) != 26)
     {
         return false;
     }
 
-    // TODO: Check all characters are alphabetic
-    // TODO: Check for duplicates using a seen[] array
+    bool seen[26] = {false};
 
-    return true; // placeholder — replace this
+    for (int i = 0; i < 26; i++)
+    {
+        if (!isalpha(key[i]))
+        {
+            return false;
+        }
+
+        int index = tolower(key[i]) - 'a';
+
+        if (seen[index])
+        {
+            return false;
+        }
+
+        seen[index] = true;
+    }
+
+    return true;
 }
