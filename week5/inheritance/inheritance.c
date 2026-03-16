@@ -81,7 +81,7 @@ int main(void)
 // ---------------------------------------------------------------------------
 person *create_family(int generations)
 {
-    // TODO: allocate memory for a new person
+    // Allocate memory for a new person
     person *p = malloc(sizeof(person));
     if (p == NULL)
     {
@@ -90,21 +90,23 @@ person *create_family(int generations)
 
     if (generations > 1)
     {
-        // TODO: recursively create two parents
-        // p->parents[0] = create_family(generations - 1);
-        // p->parents[1] = create_family(generations - 1);
+        // Create parents recursively
+        p->parents[0] = create_family(generations - 1);
+        p->parents[1] = create_family(generations - 1);
 
-        // TODO: randomly inherit one allele from each parent
-        // p->alleles[0] = p->parents[0]->alleles[rand() % 2];
-        // p->alleles[1] = p->parents[1]->alleles[rand() % 2];
+        // Inherit alleles from parents
+        p->alleles[0] = p->parents[0]->alleles[rand() % 2];
+        p->alleles[1] = p->parents[1]->alleles[rand() % 2];
     }
     else
     {
-        // TODO: oldest generation — no parents, random alleles
-        // p->parents[0] = NULL;
-        // p->parents[1] = NULL;
-        // p->alleles[0] = random_allele();
-        // p->alleles[1] = random_allele();
+        // Oldest generation (no parents)
+        p->parents[0] = NULL;
+        p->parents[1] = NULL;
+
+        // Assign random alleles
+        p->alleles[0] = random_allele();
+        p->alleles[1] = random_allele();
     }
 
     return p;
@@ -128,15 +130,17 @@ person *create_family(int generations)
 // ---------------------------------------------------------------------------
 void free_family(person *p)
 {
-    // TODO: base case — if p is NULL, return
     if (p == NULL)
     {
         return;
     }
 
-    // TODO: recursively free both parents first
+    // Free parents first
+    free_family(p->parents[0]);
+    free_family(p->parents[1]);
 
-    // TODO: then free this person
+    // Then free this person
+    free(p);
 }
 
 // ---------------------------------------------------------------------------
