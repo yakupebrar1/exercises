@@ -44,7 +44,7 @@ typedef struct node
 // ---------------------------------------------------------------------------
 // The hash table: an array of N bucket heads (all start as NULL)
 node *table[N];
-
+unsigned int word_count = 0;
 // TODO: declare a global word counter (initialize to 0)
 // This will be incremented in load() and returned by size().
 // Example: unsigned int word_count = 0;
