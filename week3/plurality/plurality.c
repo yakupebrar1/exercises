@@ -92,16 +92,25 @@ int main(int argc, string argv[])
 //   vote("alice")  → candidates[0].votes becomes 3, returns true
 //   vote("Dave")   → returns false (Dave is not a candidate)
 // ─────────────────────────────────────────────────────────────────────────────
+// Returns true if vote is valid
 bool vote(string name)
 {
-    // TODO: Loop through candidates[] (0 to candidate_count - 1)
-    //       If strcasecmp(candidates[i].name, name) == 0:
-    //           candidates[i].votes++;
-    //           return true;
+    // Loop through all candidates
+    for (int i = 0; i < candidate_count; i++)
+    {
+        // Compare candidate name with vote
+        if (strcasecmp(candidates[i].name, name) == 0)
+        {
+            // Increase vote count
+            candidates[i].votes++;
+            return true;
+        }
+    }
 
-    // If we reach here, no candidate matched
+    // No candidate matched
     return false;
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TODO: Implement print_winner()
@@ -124,10 +133,23 @@ bool vote(string name)
 // ─────────────────────────────────────────────────────────────────────────────
 void print_winner(void)
 {
-    // Step 1 — find the maximum vote count
     int max = 0;
-    // TODO: Loop through candidates[]; if candidates[i].votes > max, update max
 
-    // Step 2 — print every candidate who achieved max votes
-    // TODO: Loop through candidates[]; if candidates[i].votes == max, printf their name
+    // Find the highest vote count
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (candidates[i].votes > max)
+        {
+            max = candidates[i].votes;
+        }
+    }
+
+    // Print all candidates with the highest vote count
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (candidates[i].votes == max)
+        {
+            printf("%s\n", candidates[i].name);
+        }
+    }
 }
