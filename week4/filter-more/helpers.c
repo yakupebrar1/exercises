@@ -51,7 +51,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // ---------------------------------------------------------------------------
 // TODO 3: BLUR  (same as Filter-Less)
 // ---------------------------------------------------------------------------
-void blur(int height, int width, RGBTRIPLE image[height][width])
+
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
     RGBTRIPLE copy[height][width];
