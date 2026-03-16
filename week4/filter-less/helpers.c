@@ -36,8 +36,15 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            // TODO: compute the average of R, G, B
-            // TODO: assign average to all three channels of image[i][j]
+            int red = image[i][j].rgbtRed;
+            int green = image[i][j].rgbtGreen;
+            int blue = image[i][j].rgbtBlue;
+
+            int avg = round((red + green + blue) / 3.0);
+
+            image[i][j].rgbtRed = avg;
+            image[i][j].rgbtGreen = avg;
+            image[i][j].rgbtBlue = avg;
         }
     }
 }
@@ -67,10 +74,32 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            // TODO: save original R, G, B values
-            // TODO: compute sepia R, G, B using the formulas above
-            // TODO: cap each value at 255 (use a helper or inline if/ternary)
-            // TODO: assign new values back to image[i][j]
+            int originalRed = image[i][j].rgbtRed;
+            int originalGreen = image[i][j].rgbtGreen;
+            int originalBlue = image[i][j].rgbtBlue;
+
+            int sepiaRed = round(0.393 * originalRed + 0.769 * originalGreen + 0.189 * originalBlue);
+            int sepiaGreen = round(0.349 * originalRed + 0.686 * originalGreen + 0.168 * originalBlue);
+            int sepiaBlue = round(0.272 * originalRed + 0.534 * originalGreen + 0.131 * originalBlue);
+
+            if (sepiaRed > 255)
+            {
+                sepiaRed = 255;
+            }
+
+            if (sepiaGreen > 255)
+            {
+                sepiaGreen = 255;
+            }
+
+            if (sepiaBlue > 255)
+            {
+                sepiaBlue = 255;
+            }
+
+            image[i][j].rgbtRed = sepiaRed;
+            image[i][j].rgbtGreen = sepiaGreen;
+            image[i][j].rgbtBlue = sepiaBlue;
         }
     }
 }
@@ -95,8 +124,12 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
     for (int i = 0; i < height; i++)
     {
-        // TODO: loop j from 0 to width/2 (exclusive)
-        // TODO: swap image[i][j] and image[i][width - 1 - j]
+        for (int j = 0; j < width / 2; j++)
+        {
+            RGBTRIPLE temp = image[i][j];
+            image[i][j] = image[i][width - 1 - j];
+            image[i][width - 1 - j] = temp;
+        }
     }
 }
 
