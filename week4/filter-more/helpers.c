@@ -19,7 +19,15 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            // TODO: average R+G+B, assign to all channels (use round())
+            int r = image[i][j].rgbtRed;
+            int g = image[i][j].rgbtGreen;
+            int b = image[i][j].rgbtBlue;
+
+            int avg = round((r + g + b) / 3.0);
+
+            image[i][j].rgbtRed = avg;
+            image[i][j].rgbtGreen = avg;
+            image[i][j].rgbtBlue = avg;
         }
     }
 }
@@ -31,7 +39,12 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
     for (int i = 0; i < height; i++)
     {
-        // TODO: swap image[i][j] and image[i][width-1-j] for j in 0..width/2
+        for (int j = 0; j < width / 2; j++)
+        {
+            RGBTRIPLE temp = image[i][j];
+            image[i][j] = image[i][width - 1 - j];
+            image[i][width - 1 - j] = temp;
+        }
     }
 }
 
@@ -39,8 +52,42 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // TODO 3: BLUR  (same as Filter-Less)
 // ---------------------------------------------------------------------------
 void blur(int height, int width, RGBTRIPLE image[height][width])
+void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // TODO: copy image, then for each pixel average its valid 3x3 neighbourhood
+    RGBTRIPLE copy[height][width];
+    memcpy(copy, image, sizeof(copy));
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            float sum_r = 0;
+            float sum_g = 0;
+            float sum_b = 0;
+            int count = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+
+                    if (ni >= 0 && ni < height && nj >= 0 && nj < width)
+                    {
+                        sum_r += copy[ni][nj].rgbtRed;
+                        sum_g += copy[ni][nj].rgbtGreen;
+                        sum_b += copy[ni][nj].rgbtBlue;
+                        count++;
+                    }
+                }
+            }
+
+            image[i][j].rgbtRed = round(sum_r / count);
+            image[i][j].rgbtGreen = round(sum_g / count);
+            image[i][j].rgbtBlue = round(sum_b / count);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -79,27 +126,73 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
 // ---------------------------------------------------------------------------
 void edges(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Sobel kernels
     int Gx[3][3] = {
         {-1, 0, 1},
         {-2, 0, 2},
         {-1, 0, 1}
     };
+
     int Gy[3][3] = {
         {-1, -2, -1},
-        { 0,  0,  0},
-        { 1,  2,  1}
+        {0, 0, 0},
+        {1, 2, 1}
     };
 
-    // TODO: declare a copy of the image (same as blur)
+    RGBTRIPLE copy[height][width];
+    memcpy(copy, image, sizeof(copy));
 
-    // TODO: outer loops over each pixel (i, j)
-    //   For each pixel:
-    //     Initialize gx_r, gy_r, gx_g, gy_g, gx_b, gy_b = 0
-    //     Inner loops di = -1..1, dj = -1..1:
-    //       - If neighbour (i+di, j+dj) is out of bounds, treat as (0,0,0)
-    //       - Otherwise use copy[i+di][j+dj]
-    //       - Accumulate: gx_r += Gx[di+1][dj+1] * neighbour_red; etc.
-    //     Final channel = min(255, round(sqrt(gx_r^2 + gy_r^2))); etc.
-    //     Assign to image[i][j]
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            int gx_r = 0, gy_r = 0;
+            int gx_g = 0, gy_g = 0;
+            int gx_b = 0, gy_b = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+
+                    if (ni >= 0 && ni < height && nj >= 0 && nj < width)
+                    {
+                        int kernelx = Gx[di + 1][dj + 1];
+                        int kernely = Gy[di + 1][dj + 1];
+
+                        gx_r += kernelx * copy[ni][nj].rgbtRed;
+                        gy_r += kernely * copy[ni][nj].rgbtRed;
+
+                        gx_g += kernelx * copy[ni][nj].rgbtGreen;
+                        gy_g += kernely * copy[ni][nj].rgbtGreen;
+
+                        gx_b += kernelx * copy[ni][nj].rgbtBlue;
+                        gy_b += kernely * copy[ni][nj].rgbtBlue;
+                    }
+                }
+            }
+
+            int red = round(sqrt(gx_r * gx_r + gy_r * gy_r));
+            int green = round(sqrt(gx_g * gx_g + gy_g * gy_g));
+            int blue = round(sqrt(gx_b * gx_b + gy_b * gy_b));
+
+            if (red > 255)
+            {
+                red = 255;
+            }
+            if (green > 255)
+            {
+                green = 255;
+            }
+            if (blue > 255)
+            {
+                blue = 255;
+            }
+
+            image[i][j].rgbtRed = red;
+            image[i][j].rgbtGreen = green;
+            image[i][j].rgbtBlue = blue;
+        }
+    }
 }
