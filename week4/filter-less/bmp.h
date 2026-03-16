@@ -1,7 +1,10 @@
 // CS50x Week 4 — BMP type definitions (distribution code)
 // DO NOT MODIFY THIS FILE
+#ifndef BMP_H
+#define BMP_H
 
 #include <stdint.h>
+
 
 // Aliases for C types
 typedef uint8_t  BYTE;
@@ -45,3 +48,5 @@ typedef struct
     BYTE  rgbtRed;
 } __attribute__((__packed__))
 RGBTRIPLE;
+
+#endif
